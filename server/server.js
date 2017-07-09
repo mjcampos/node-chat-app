@@ -16,6 +16,15 @@ io.on('connection', (socket) => {
 	socket.on('disconnect', () => {
 		console.log("User was disconnected");
 	});
+
+	socket.emit('newMessage', {
+		text: "i love iZombie",
+		created: 123123
+	});
+
+	socket.on('createMessage', (message) => {
+		console.log("createMessage", message);
+	});
 });
 
 var port = process.env.PORT || 8888;
