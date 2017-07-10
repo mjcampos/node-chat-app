@@ -5,7 +5,7 @@ var publicPath = path.join(__dirname, '../public');
 var app = express();
 var socketIO = require('socket.io');
 
-var {generateMessage} = require('./utils/message');
+var {generateMessage, generateLocationMessage} = require('./utils/message');
 var server = http.createServer(app);
 
 var io = socketIO(server);
@@ -23,13 +23,11 @@ io.on('connection', (socket) => {
 		console.log("createMessage", message);
 
 		io.emit('newMessage', generateMessage(message.from, message.text));
-		callback("This is from the server. Rumor has it that you are a client.");
+		callback("This is from the server. Rumor has it that you are a client.");	
+	});
 
-		// socket.broadcast.emit('newMessage', {
-		// 	from: message.from,
-		// 	text: message.text,
-		// 	createdAt: new Date().getTime()
-		// });
+	socket.on('createLocationMessage', (coords) => {
+		io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
 	});
 
 	socket.on('disconnect', () => {
