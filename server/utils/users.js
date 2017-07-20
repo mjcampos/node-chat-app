@@ -4,6 +4,14 @@ class Users {
 	}
 
 	addUser (id, name, room) {
+		// Check if name already exists in array
+		for(var i = 0; i < this.users.length; i++) {
+			if ((this.users[i].name === name) && (this.users[i].room === room)) {
+				return null;
+			};
+		}
+
+		// If it doesn't then continue
 		var user = {id, name, room};
 
 		this.users.push(user);

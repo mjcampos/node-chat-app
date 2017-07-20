@@ -16,7 +16,7 @@ var users = new Users();
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
-	console.log("New user connected");
+	// console.log("New user connected");
 
 	socket.on('join', (params, callback) => {
 		if (!isRealString(params.name) || !isRealString(params.room)) {
@@ -25,14 +25,22 @@ io.on('connection', (socket) => {
 
 		socket.join(params.room);
 		users.removeUser(socket.id);
-		users.addUser(socket.id, params.name, params.room);
+		
+		var res = users.addUser(socket.id, params.name, params.room);
 
-		io.to(params.room).emit('updateUserList', users.getUserList(params.room));
+		if (res) {
+			console.log(params.name + " has connected");
 
-		socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+			io.to(params.room).emit('updateUserList', users.getUserList(params.room));
 
-		socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', params.name + " has joined."));
-		callback();
+			socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+
+			socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', params.name + " has joined."));
+			callback();
+		} else{
+			return callback('Please select unique name for this room');
+		};
+
 	});
 
 	socket.on('createMessage', (message, callback) => {

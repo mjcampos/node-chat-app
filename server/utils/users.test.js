@@ -35,6 +35,30 @@ describe('Users', () => {
 		expect(users.users).toEqual([user]);
 	});
 
+	it('should not add user if duplicate name and room', () => {
+		var user = {
+			id: '4',
+			name: 'Mike',
+			room: 'Node course'
+		}
+
+		var res = users.addUser(user.id, user.name, user.room);
+
+		expect(users.users.length).toBe(3);
+	});
+
+	it('should add user if duplicate name but different room', () => {
+		var user = {
+			id: '5',
+			name: 'Mike',
+			room: 'Rails course'
+		}
+
+		var res = users.addUser(user.id, user.name, user.room);
+
+		expect(res).toEqual(user);
+	});
+
 	it('should remove a user', () => {
 		var userId = '2';
 		var res = users.removeUser(userId);
